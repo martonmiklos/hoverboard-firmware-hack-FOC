@@ -154,72 +154,86 @@ void DMA1_Channel1_IRQHandler(void) {
   enableFin = enable && !rtY_Left.z_errCode && !rtY_Right.z_errCode;
  
   // ========================= LEFT MOTOR ============================ 
-    // Get hall sensors values
-    uint8_t hall_ul = !(LEFT_HALL_U_PORT->IDR & LEFT_HALL_U_PIN);
-    uint8_t hall_vl = !(LEFT_HALL_V_PORT->IDR & LEFT_HALL_V_PIN);
-    uint8_t hall_wl = !(LEFT_HALL_W_PORT->IDR & LEFT_HALL_W_PIN);
-
-    /* Set motor inputs here */
-    rtU_Left.b_motEna     = enableFin;
-    rtU_Left.z_ctrlModReq = ctrlModReq;  
-    rtU_Left.r_inpTgt     = pwml;
-    rtU_Left.b_hallA      = hall_ul;
-    rtU_Left.b_hallB      = hall_vl;
-    rtU_Left.b_hallC      = hall_wl;
-    rtU_Left.i_phaAB      = curL_phaA;
-    rtU_Left.i_phaBC      = curL_phaB;
-    rtU_Left.i_DCLink     = curL_DC;    
-    
-    /* Step the controller */
-    BLDC_controller_step(rtM_Left);
-
-    /* Get motor outputs here */
-    ul            = rtY_Left.DC_phaA;
-    vl            = rtY_Left.DC_phaB;
-    wl            = rtY_Left.DC_phaC;
-  // errCodeLeft  = rtY_Left.z_errCode;
-  // motSpeedLeft = rtY_Left.n_mot;
-  // motAngleLeft = rtY_Left.a_elecAngle;
 
     /* Apply commands */
-    LEFT_TIM->LEFT_TIM_U    = (uint16_t)CLAMP(ul + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
-    LEFT_TIM->LEFT_TIM_V    = (uint16_t)CLAMP(vl + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
-    LEFT_TIM->LEFT_TIM_W    = (uint16_t)CLAMP(wl + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+    if (pwml == 0) {
+        LEFT_TIM->LEFT_TIM_U    = 0;
+        LEFT_TIM->LEFT_TIM_V    = 0;
+        LEFT_TIM->LEFT_TIM_W    = 0;
+    } else {
+        // Get hall sensors values
+        uint8_t hall_ul = !(LEFT_HALL_U_PORT->IDR & LEFT_HALL_U_PIN);
+        uint8_t hall_vl = !(LEFT_HALL_V_PORT->IDR & LEFT_HALL_V_PIN);
+        uint8_t hall_wl = !(LEFT_HALL_W_PORT->IDR & LEFT_HALL_W_PIN);
+
+        /* Set motor inputs here */
+        rtU_Left.b_motEna     = enableFin;
+        rtU_Left.z_ctrlModReq = ctrlModReq;
+        rtU_Left.r_inpTgt     = pwml;
+        rtU_Left.b_hallA      = hall_ul;
+        rtU_Left.b_hallB      = hall_vl;
+        rtU_Left.b_hallC      = hall_wl;
+        rtU_Left.i_phaAB      = curL_phaA;
+        rtU_Left.i_phaBC      = curL_phaB;
+        rtU_Left.i_DCLink     = curL_DC;
+
+        /* Step the controller */
+        BLDC_controller_step(rtM_Left);
+
+        /* Get motor outputs here */
+        ul            = rtY_Left.DC_phaA;
+        vl            = rtY_Left.DC_phaB;
+        wl            = rtY_Left.DC_phaC;
+      // errCodeLeft  = rtY_Left.z_errCode;
+      // motSpeedLeft = rtY_Left.n_mot;
+      // motAngleLeft = rtY_Left.a_elecAngle;
+
+        LEFT_TIM->LEFT_TIM_U    = (uint16_t)CLAMP(ul + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+        LEFT_TIM->LEFT_TIM_V    = (uint16_t)CLAMP(vl + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+        LEFT_TIM->LEFT_TIM_W    = (uint16_t)CLAMP(wl + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+    }
+
   // =================================================================
   
 
-  // ========================= RIGHT MOTOR ===========================  
-    // Get hall sensors values
-    uint8_t hall_ur = !(RIGHT_HALL_U_PORT->IDR & RIGHT_HALL_U_PIN);
-    uint8_t hall_vr = !(RIGHT_HALL_V_PORT->IDR & RIGHT_HALL_V_PIN);
-    uint8_t hall_wr = !(RIGHT_HALL_W_PORT->IDR & RIGHT_HALL_W_PIN);
-
-    /* Set motor inputs here */
-    rtU_Right.b_motEna      = enableFin;
-    rtU_Right.z_ctrlModReq  = ctrlModReq;
-    rtU_Right.r_inpTgt      = pwmr;
-    rtU_Right.b_hallA       = hall_ur;
-    rtU_Right.b_hallB       = hall_vr;
-    rtU_Right.b_hallC       = hall_wr;
-    rtU_Right.i_phaAB       = curR_phaB;
-    rtU_Right.i_phaBC       = curR_phaC;
-    rtU_Right.i_DCLink      = curR_DC;
-
-    /* Step the controller */
-    BLDC_controller_step(rtM_Right);
-
-    /* Get motor outputs here */
-    ur            = rtY_Right.DC_phaA;
-    vr            = rtY_Right.DC_phaB;
-    wr            = rtY_Right.DC_phaC;
- // errCodeRight  = rtY_Right.z_errCode;
- // motSpeedRight = rtY_Right.n_mot;
- // motAngleRight = rtY_Right.a_elecAngle;
-
     /* Apply commands */
-    RIGHT_TIM->RIGHT_TIM_U  = (uint16_t)CLAMP(ur + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
-    RIGHT_TIM->RIGHT_TIM_V  = (uint16_t)CLAMP(vr + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
-    RIGHT_TIM->RIGHT_TIM_W  = (uint16_t)CLAMP(wr + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+    if (pwmr == 0) {
+        RIGHT_TIM->RIGHT_TIM_U  = 0;
+        RIGHT_TIM->RIGHT_TIM_V  = 0;
+        RIGHT_TIM->RIGHT_TIM_W  = 0;
+    } else {
+
+        // ========================= RIGHT MOTOR ===========================
+          // Get hall sensors values
+          uint8_t hall_ur = !(RIGHT_HALL_U_PORT->IDR & RIGHT_HALL_U_PIN);
+          uint8_t hall_vr = !(RIGHT_HALL_V_PORT->IDR & RIGHT_HALL_V_PIN);
+          uint8_t hall_wr = !(RIGHT_HALL_W_PORT->IDR & RIGHT_HALL_W_PIN);
+
+          /* Set motor inputs here */
+          rtU_Right.b_motEna      = enableFin;
+          rtU_Right.z_ctrlModReq  = ctrlModReq;
+          rtU_Right.r_inpTgt      = pwmr;
+          rtU_Right.b_hallA       = hall_ur;
+          rtU_Right.b_hallB       = hall_vr;
+          rtU_Right.b_hallC       = hall_wr;
+          rtU_Right.i_phaAB       = curR_phaB;
+          rtU_Right.i_phaBC       = curR_phaC;
+          rtU_Right.i_DCLink      = curR_DC;
+
+          /* Step the controller */
+          BLDC_controller_step(rtM_Right);
+
+          /* Get motor outputs here */
+          ur            = rtY_Right.DC_phaA;
+          vr            = rtY_Right.DC_phaB;
+          wr            = rtY_Right.DC_phaC;
+       // errCodeRight  = rtY_Right.z_errCode;
+       // motSpeedRight = rtY_Right.n_mot;
+       // motAngleRight = rtY_Right.a_elecAngle;
+        RIGHT_TIM->RIGHT_TIM_U  = (uint16_t)CLAMP(ur + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+        RIGHT_TIM->RIGHT_TIM_V  = (uint16_t)CLAMP(vr + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+        RIGHT_TIM->RIGHT_TIM_W  = (uint16_t)CLAMP(wr + pwm_res / 2, pwm_margin, pwm_res-pwm_margin);
+    }
   // =================================================================
 
   /* Indicate task complete */

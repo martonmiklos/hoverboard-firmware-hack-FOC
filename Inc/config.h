@@ -14,7 +14,7 @@
   //#define VARIANT_USART       // Variant for Serial control via USART3 input
   //#define VARIANT_NUNCHUK     // Variant for Nunchuk controlled vehicle build
   //#define VARIANT_PPM         // Variant for RC-Remote with PPM-Sum Signal
-  //#define VARIANT_PWM         // Variant for RC-Remote with PWM Signal
+  #define VARIANT_PWM         // Variant for RC-Remote with PWM Signal
   //#define VARIANT_IBUS        // Variant for RC-Remotes with FLYSKY IBUS
   //#define VARIANT_HOVERCAR    // Variant for HOVERCAR build
   //#define VARIANT_HOVERBOARD  // Variant for HOVERBOARD build
@@ -146,8 +146,8 @@
 
 // ############################## DEFAULT SETTINGS ############################
 // Default settings will be applied at the end of this config file if not set before
-#define INACTIVITY_TIMEOUT      	8       // Minutes of not driving until poweroff. it is not very precise.
-#define BEEPS_BACKWARD          	1       // 0 or 1
+#define INACTIVITY_TIMEOUT      	10       // Minutes of not driving until poweroff. it is not very precise.
+#define BEEPS_BACKWARD          	0       // 0 or 1
 #define FLASH_WRITE_KEY           0x1234  // Flash writing key, used when writing data to flash memory
 // #define SUPPORT_BUTTONS							  // Define for buttons support on ADC, Nunchuck
 
@@ -159,8 +159,8 @@
 // Value of RATE is in fixdt(1,16,4): VAL_fixedPoint = VAL_floatingPoint * 2^4. In this case 480 = 30 * 2^4
 #define DEFAULT_RATE                480   // 30.0f [-] lower value == slower rate [0, 32767] = [0.0, 2047.9375]. Do NOT make rate negative (>32767)
 #define DEFAULT_FILTER              6553  // Default for FILTER 0.1f [-] lower value == softer filter [0, 65535] = [0.0 - 1.0].
-#define DEFAULT_SPEED_COEFFICIENT   16384 // Default for SPEED_COEFFICIENT 1.0f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case 16384 = 1.0 * 2^14
-#define DEFAULT_STEER_COEFFICIENT   8192  // Defualt for STEER_COEFFICIENT 0.5f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case  8192 = 0.5 * 2^14. If you do not want any steering, set it to 0.
+#define DEFAULT_SPEED_COEFFICIENT   6144 // Default for SPEED_COEFFICIENT 1.0f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case 16384 = 1.0 * 2^14
+#define DEFAULT_STEER_COEFFICIENT   3072 // Defualt for STEER_COEFFICIENT 0.5f [-] higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case  8192 = 0.5 * 2^14. If you do not want any steering, set it to 0.
 // ######################### END OF DEFAULT SETTINGS ##########################
 
 
@@ -247,24 +247,6 @@
 
 
 
-// ################################# VARIANT_NUNCHUK SETTINGS ############################
-#ifdef VARIANT_NUNCHUK
-  /* left sensor board cable. USART3
-   * keep cable short, use shielded cable, use ferrits, stabalize voltage in nunchuk,
-   * use the right one of the 2 types of nunchuks, add i2c pullups.
-   * use original nunchuk. most clones does not work very well.
-   * Recommendation: Nunchuk Breakout Board https://github.com/Jan--Henrik/hoverboard-breakout
-  */
-  #define CONTROL_NUNCHUK           // use nunchuk as input. disable FEEDBACK_SERIAL_USART3, DEBUG_SERIAL_USART3!
-  // # maybe good for ARMCHAIR #
-  #define FILTER             3276    //  0.05f
-  #define SPEED_COEFFICIENT  8192    //  0.5f
-  #define STEER_COEFFICIENT  62259   // -0.2f
-#endif
-// ############################# END OF VARIANT_NUNCHUK SETTINGS #########################
-
-
-
 // ################################# VARIANT_PPM SETTINGS ##############################
 #ifdef VARIANT_PPM
 /* ###### CONTROL VIA RC REMOTE ######
@@ -272,8 +254,8 @@
  * https://gist.github.com/peterpoetzi/1b63a4a844162196613871767189bd05
 */
   #define CONTROL_PPM                 // use PPM-Sum as input. disable CONTROL_SERIAL_USART2!
-  #define PPM_NUM_CHANNELS    6       // total number of PPM channels to receive, even if they are not used.
-  #define PPM_DEADBAND        100     // How much of the center position is considered 'center' (100 = values -100 to 100 are considered 0)
+  #define PPM_NUM_CHANNELS    8       // total number of PPM channels to receive, even if they are not used.
+  #define PPM_DEADBAND        50     // How much of the center position is considered 'center' (100 = values -100 to 100 are considered 0)
   // Min / Max values of each channel (use DEBUG to determine these values)
   #define PPM_CH1_MAX         1000    // (0 - 1000)
   #define PPM_CH1_MIN        -1000    // (-1000 - 0)
@@ -290,39 +272,20 @@
  * Channel 1: steering, Channel 2: speed.
 */
   #define CONTROL_PWM                         // use RC PWM as input. disable DEBUG_SERIAL_USART2!
-  #define PWM_DEADBAND        100     // How much of the center position is considered 'center' (100 = values -100 to 100 are considered 0)
+  #define PWM_DEADBAND        200     // How much of the center position is considered 'center' (100 = values -100 to 100 are considered 0)
   // Min / Max values of each channel (use DEBUG to determine these values)
   #define PWM_CH1_MAX         1000    // (0 - 1000)
   #define PWM_CH1_MIN        -1000    // (-1000 - 0)
   #define PWM_CH2_MAX         1000    // (0 - 1000)
   #define PWM_CH2_MIN        -1000    // (-1000 - 0)  
   #define FILTER              6553    // 0.1f [-] fixdt(0,16,16) lower value == softer filter [0, 65535] = [0.0 - 1.0].
-  #define SPEED_COEFFICIENT   16384   // 1.0f [-] fixdt(1,16,14) higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case 16384 = 1.0 * 2^14
-  #define STEER_COEFFICIENT   0       // 0.0f [-] fixdt(1,16,14) higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case     0 = 0.0 * 2^14. If you do not want any steering, set it to 0.
+  //#define SPEED_COEFFICIENT   16384   // 1.0f [-] fixdt(1,16,14) higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case 16384 = 1.0 * 2^14
+  //#define STEER_COEFFICIENT   0       // 0.0f [-] fixdt(1,16,14) higher value == stronger. [0, 65535] = [-2.0 - 2.0]. In this case     0 = 0.0 * 2^14. If you do not want any steering, set it to 0.
   // #define SUPPORT_BUTTONS          // use right sensor board cable for button inputs. Disable DEBUG_SERIAL_USART3!
   // #define INVERT_R_DIRECTION
-  // #define INVERT_L_DIRECTION
+   #define INVERT_L_DIRECTION
 #endif
 // ############################# END OF VARIANT_PPM SETTINGS ############################
-
-
-
-// ################################# VARIANT_IBUS SETTINGS ##############################
-#ifdef VARIANT_IBUS
-/* CONTROL VIA RC REMOTE WITH FLYSKY IBUS PROTOCOL 
-* Connected to Left sensor board cable. Channel 1: steering, Channel 2: speed.
-*/
-  #define CONTROL_IBUS                                  // use IBUS as input
-  #define IBUS_NUM_CHANNELS   14                        // total number of IBUS channels to receive, even if they are not used.
-  #define IBUS_LENGTH         0x20
-  #define IBUS_COMMAND        0x40
-
-  #undef  USART2_BAUD
-  #define USART2_BAUD         115200
-  #define CONTROL_SERIAL_USART2                         // left sensor board cable, disable if ADC or PPM is used!
-  #define FEEDBACK_SERIAL_USART2                        // left sensor board cable, disable if ADC or PPM is used!
-#endif
-// ############################# END OF VARIANT_IBUS SETTINGS ############################
 
 
 
@@ -353,38 +316,6 @@
 #define MULTIPLE_TAP_LO       200        // [-] Multiple tap detection Low hysteresis threshold
 #define MULTIPLE_TAP_TIMEOUT  2000       // [ms] Multiple tap detection Timeout period. The taps need to happen within this time window to be accepted.
 // ######################## END OF VARIANT_HOVERCAR SETTINGS #########################
-
-
-
-// ############################ VARIANT_HOVERBOARD SETTINGS ############################
-// Communication:         [DONE]
-// Balancing controller:  [TODO]
-#ifdef VARIANT_HOVERBOARD
-  #define SIDEBOARD_SERIAL_USART2       // left sensor board cable, disable if ADC or PPM is used! 
-  #define FEEDBACK_SERIAL_USART2
-  #define SIDEBOARD_SERIAL_USART3       // right sensor board cable, disable if I2C (nunchuk or lcd) is used!        
-  #define FEEDBACK_SERIAL_USART3        
-#endif
-// ######################## END OF VARIANT_HOVERBOARD SETTINGS #########################
-
-
-
-// ################################# VARIANT_TRANSPOTTER SETTINGS ############################
-//TODO ADD VALIDATION
-#ifdef VARIANT_TRANSPOTTER
-  #define CONTROL_GAMETRAK
-  #define SUPPORT_LCD
-  // #define SUPPORT_NUNCHUK
-  #define GAMETRAK_CONNECTION_NORMAL    // for normal wiring according to the wiki instructions
-  //#define GAMETRAK_CONNECTION_ALTERNATE // use this define instead if you messed up the gametrak ADC wiring (steering is speed, and length of the wire is steering)
-  #define ROT_P               1.2       // P coefficient for the direction controller. Positive / Negative values to invert gametrak steering direction.
-  // during nunchuk control (only relevant when activated)
-  #define SPEED_COEFFICIENT   14746     // 0.9f - higher value == stronger. 0.0 to ~2.0?
-  #define STEER_COEFFICIENT   8192      // 0.5f - higher value == stronger. if you do not want any steering, set it to 0.0; 0.0 to 1.0
-  #define INVERT_R_DIRECTION            // Invert right motor
-  #define INVERT_L_DIRECTION            // Invert left motor
-#endif
-// ############################# END OF VARIANT_TRANSPOTTER SETTINGS ########################
 
 
 
