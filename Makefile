@@ -163,6 +163,7 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@
+	cp $(BUILD_DIR)/hover.bin /home/mm/Dropbox/matko_scooter/
 
 $(BUILD_DIR):
 	mkdir -p $@

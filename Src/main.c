@@ -385,8 +385,8 @@ int main(void) {
     #if defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)
       if (main_loop_counter % 25 == 0) {    // Send data periodically every 125 ms
         #ifdef CONTROL_ADC
-        setScopeChannel(0, (int16_t)adc_buffer.l_tx2);          // 1: ADC1
-        setScopeChannel(1, (int16_t)adc_buffer.l_rx2);          // 2: ADC2
+        setScopeChannel(0, cmd1);          // 1: ADC1
+        setScopeChannel(1, cmd2);          // 2: ADC2
         #endif
         #ifdef CONTROL_PPM
         setScopeChannel(0, ppm_captured_value[0]);              // 1: CH1

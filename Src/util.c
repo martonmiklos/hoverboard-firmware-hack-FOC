@@ -670,6 +670,8 @@ void readCommand(void) {
       #else
         cmd2 = CLAMP((adc_buffer.l_rx2 - ADC2_MIN_CAL) * INPUT_MAX / (ADC2_MAX_CAL - ADC2_MIN_CAL), 0, INPUT_MAX);    // ADC2
       #endif
+        cmd2 = cmd1;
+        cmd1 = 0; // no steering on scooter and the ADC2 is broken on Matkos scooter
 
       #ifdef ADC_PROTECT_ENA
         if (adc_buffer.l_tx2 >= (ADC1_MIN_CAL - ADC_PROTECT_THRESH) && adc_buffer.l_tx2 <= (ADC1_MAX_CAL + ADC_PROTECT_THRESH) && 
