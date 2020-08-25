@@ -126,13 +126,13 @@
 */
 // Control selections
 #define CTRL_TYP_SEL    2               // [-] Control type selection: 0 = Commutation , 1 = Sinusoidal, 2 = FOC Field Oriented Control (default)
-#define CTRL_MOD_REQ    3               // [-] Control mode request: 0 = Open mode, 1 = VOLTAGE mode (default), 2 = SPEED mode, 3 = TORQUE mode. Note: SPEED and TORQUE modes are only available for FOC!
+#define CTRL_MOD_REQ    2               // [-] Control mode request: 0 = Open mode, 1 = VOLTAGE mode (default), 2 = SPEED mode, 3 = TORQUE mode. Note: SPEED and TORQUE modes are only available for FOC!
 #define DIAG_ENA        1               // [-] Motor Diagnostics enable flag: 0 = Disabled, 1 = Enabled (default)
 
 // Limitation settings
-#define I_MOT_MAX       40              // [A] Maximum single motor current limit
+#define I_MOT_MAX       20              // [A] Maximum single motor current limit
 #define I_DC_MAX        50              // [A] Maximum stage2 DC Link current limit for Commutation and Sinusoidal types (This is the final current protection. Above this value, current chopping is applied. To avoid this make sure that I_DC_MAX = I_MOT_MAX + 2A)
-#define N_MOT_MAX       2000            // [rpm] Maximum motor speed limit
+#define N_MOT_MAX       600            // [rpm] Maximum motor speed limit
 
 // Field Weakening / Phase Advance
 #define FIELD_WEAK_ENA  1               // [-] Field Weakening / Phase Advance enable flag: 0 = Disabled (default), 1 = Enabled
@@ -229,6 +229,7 @@
   //#define ADC2_MID            1040      // mid ADC2-value while poti at minimum-position (ADC2_MIN - ADC2_MAX)
   #define ADC2_MAX            3175      // max ADC2-value while poti at maximum-position (0 - 4095)
   #define INVERT_L_DIRECTION
+  #define INVERT_R_DIRECTION
 #endif
 // ############################# END OF VARIANT_ADC SETTINGS #########################
 
